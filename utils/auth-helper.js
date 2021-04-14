@@ -27,6 +27,14 @@ const generateRefreshToken = async (res, payload) => {
   });
 }
 
+/**
+ * Validate the the request is authenticated. Process the header and verify the token as a middleware.
+ *
+ * @param req the request
+ * @param res the response
+ * @param next the next func
+ * @returns {Promise<void>}
+ */
 const isAuthenticated = async (req, res, next) => {
 
   const header = req.headers;
@@ -49,6 +57,13 @@ const isAuthenticated = async (req, res, next) => {
   }
 }
 
+/**
+ * Handles refreshing of the access token. Request cookies will be used to validate the refresh token.
+ *
+ * @param req the request
+ * @param res the response
+ * @returns {Promise<*>}
+ */
 const refreshToken = async (req, res) => {
   const token = req.cookies.token || '';
   try {
@@ -63,6 +78,13 @@ const refreshToken = async (req, res) => {
   }
 }
 
+/**
+ * Handles logout functionality. Removes the refresh token.
+ * TODO Persist removed refresh token in DB for future validations
+ *
+ * @param req the request
+ * @param res the response
+ */
 const logout = (req, res) => {
   res.clearCookie('token');
   res.status(200).send({ message: 'Logout success.' });
