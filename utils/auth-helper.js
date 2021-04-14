@@ -13,10 +13,10 @@ const generateAccessToken = (payload) => {
   return generateToken(payload, secret, { expiresIn });
 }
 
-const generateRefreshToken = async (res, payload) => {
+const generateRefreshToken = (res, payload) => {
   const expiresIn = process.env.REFRESH_TOKEN_EXPIRES;
   const secret = process.env.REFRESH_TOKEN_SECRET;
-  const token = await generateToken(payload, secret, { expiresIn });
+  const token = generateToken(payload, secret, { expiresIn });
 
   const oneDayToSeconds = 24 * 60 * 60;
 
@@ -35,7 +35,7 @@ const generateRefreshToken = async (res, payload) => {
  * @param next the next func
  * @returns {Promise<void>}
  */
-const isAuthenticated = async (req, res, next) => {
+const isAuthenticated = (req, res, next) => {
 
   const header = req.headers;
   const token = header.authorization?.split(' ')[1];
@@ -45,7 +45,7 @@ const isAuthenticated = async (req, res, next) => {
   }
 
   try {
-    const decode = await jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
+    const decode = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
 
     req.user = {
       email: decode.email
@@ -64,14 +64,14 @@ const isAuthenticated = async (req, res, next) => {
  * @param res the response
  * @returns {Promise<*>}
  */
-const refreshToken = async (req, res) => {
+const refreshToken = (req, res) => {
   const token = req.cookies.token || '';
   try {
     if (!token) {
       res.status(401).send({ status: 'ERROR', message: 'You are not authorized. Please log in again.' });
     }
 
-    const decode = await jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
+    const decode = jwt.verify(token, process.env.REFRESH_TOKEN_SECRET);
     return generateAccessToken({ email: decode.email });
   } catch (err) {
     res.status(500).send({ message: err.message });

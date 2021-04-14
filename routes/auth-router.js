@@ -12,11 +12,11 @@ const {
 
 config();
 
-authRouter.post('/login', async (req, res) => {
+authRouter.post('/login',(req, res) => {
   const { email, password } = req.body;
 
   if (email === 'hello@example.com' && password === 'hello@123') {
-    await generateRefreshToken(res, { email });
+    generateRefreshToken(res, { email });
     const token = generateAccessToken({ email });
     const message = { status: 'SUCCESS', token }
 
@@ -26,8 +26,8 @@ authRouter.post('/login', async (req, res) => {
   res.status(401).send({ status: 'ERROR', message: 'Invalid email or password' });
 });
 
-authRouter.post('/refresh', async (req, res) => {
-  const token = await refreshToken(req, res);
+authRouter.post('/refresh', (req, res) => {
+  const token = refreshToken(req, res);
   res.send({ status: 'SUCCESS', token });
 });
 
