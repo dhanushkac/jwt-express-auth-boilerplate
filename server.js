@@ -20,6 +20,10 @@ app.get('/restricted', isAuthenticated, (req, res) => {
   res.status(200).send({ message: 'Accessed restricted zone.' });
 });
 
+app.all('*', (req, res) => {
+  res.status(400).send({ message: 'Invalid Route.' });
+});
+
 app.listen(port, () => {
   console.log(`App is running on ${port}`);
 });
